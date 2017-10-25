@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>My Component</title>
+    </head>
+    <body>
+        <script lang="javascript">
+            class MyComponent extends HTMLElement {
+                // constructor is required, and super() must be called
+                constructor() {
+                    super();
+                }
+
+                // A getter/setter for an open property.
+                get open() {
+                    return this.hasAttribute('open');
+                }
+
+                set open(val) {
+                    // Reflect the value of the open property as an HTML attribute.
+                    if (val) {
+                        this.setAttribute('open', '');
+                    } else {
+                        this.removeAttribute('open');
+                    }
+                }
+            }
+
+            // associate tag with custom element
+            customElements.define('my-component', MyComponent);
+        </script>
+
+        <h3>My Component</h3>
+
+        <!-- include tag like any other tag -->
+        <my-component open></my-component>
+    </body>
+</html>

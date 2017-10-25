@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>My Native Component</title>
+    </head>
+
+    <body>
+        <script lang="javascript">
+            // extending a native element is a little different then
+            // writing a completely custom element
+            class MyNativeComponent extends HTMLButtonElement {
+                constructor() {
+                    super();
+                    this.addEventListener('click',e  => this.drawRipple(e.offsetX, e.offsetY));
+                }
+
+                // material design ripple animation (only works if material design is available)
+                drawRipple(x, y) {
+                    let div = document.createElement('div');
+                    div.classList.add('ripple');
+                    this.appendChild(div);
+                    div.style.top = `${y - div.clientHeight/2}px`;
+                    div.style.left = `${x - div.clientWidth/2}px`;
+                    div.style.backgroundColor = 'currentColor';
+                    div.classList.add('run');
+                    div.addEventListener('transitionend', e => div.remove());
+                }
+            }
+
+            // the call here requires the extends attribute set
+            customElements.define('my-native-component', MyNativeComponent, {extends: 'button'});
+
+            function createButton() {
+                //let button = new MyNativeComponent();     // using 'new' results in exceptions
+                let button = document.createElement('button', {is: 'fancy-button'});
+                button.textContent = 'Made with Javascript';
+                button.disabled = true;
+                document.body.appendChild(button);
+            }
+
+            function createButtonWithNew() {
+                const MyNativeComponent = customElements.get('my-native-component');    //.get returns the element's constructor -or- undefined
+                let button = new MyNativeComponent();
+                button.textContent = 'Made with Javascript new()';
+                button.disabled = true;
+                document.body.appendChild(button);
+            }
+
+            createButton();
+            // createButtonWithNew(); // fails with 'Uncaught TypeError: illegal constructor'
+        </script>
+
+        <h3>My Native Component</h3>
+        <!-- adding the component to the page requires the use of 'is' and uses the tag of the parent -->
+        <button is="my-native-component" disabled>My Native Component</button>
+
+    </body>
+</html>
